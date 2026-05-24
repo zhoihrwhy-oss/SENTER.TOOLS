@@ -1,0 +1,69 @@
+local Tool = Instance.new("Tool")
+Tool.Name = "flash by Zenns"
+Tool.RequiresHandle = true
+
+local Handle = Instance.new("Part")
+Handle.Name = "Handle"
+Handle.Size = Vector3.new(0.3, 0.3, 1.2)
+Handle.BrickColor = BrickColor.new("Really black")
+Handle.Material = Enum.Material.SmoothPlastic
+Handle.Parent = Tool
+
+-- Pencahayaan Utama (Sorot Jauh)
+local MainLight = Instance.new("SpotLight")
+MainLight.Name = "MainLight"
+MainLight.Brightness = 8
+MainLight.Range = 90
+MainLight.Angle = 35
+MainLight.Color = Color3.fromRGB(255, 250, 235) -- Warna hangat (warm white)
+MainLight.Shadows = true
+MainLight.Face = Enum.NormalId.Front
+MainLight.Parent = Handle
+
+-- Pencahayaan Sekunder (Ambient/Pendaran Dekat)
+local AmbientLight = Instance.new("SpotLight")
+AmbientLight.Name = "AmbientLight"
+AmbientLight.Brightness = 2
+AmbientLight.Range = 20
+AmbientLight.Angle = 90
+AmbientLight.Color = Color3.fromRGB(255, 245, 220)
+AmbientLight.Shadows = false
+AmbientLight.Face = Enum.NormalId.Front
+AmbientLight.Parent = Handle
+
+-- Efek Glow di Ujung Lensa Senter
+local LensGlow = Instance.new("PointLight")
+LensGlow.Name = "LensGlow"
+LensGlow.Brightness = 1.5
+LensGlow.Range = 3
+LensGlow.Color = Color3.fromRGB(255, 252, 240)
+LensGlow.Shadows = false
+LensGlow.Parent = Handle
+
+local isOn = false
+
+Tool.Activated:Connect(function()
+    isOn = not isOn
+    MainLight.Enabled = isOn
+    AmbientLight.Enabled = isOn
+    LensGlow.Enabled = isOn
+    
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://9114223143" -- Suara saklar senter realistis
+    sound.Volume = 0.6
+    sound.Parent = Handle
+    sound:Play()
+    game:GetService("Debris"):AddItem(sound, 1)
+end)
+
+Tool.Unequipped:Connect(function()
+    isOn = false
+    MainLight.Enabled = false
+    AmbientLight.Enabled = false
+    LensGlow.Enabled = false
+end)
+
+local player = game:GetService("Players").LocalPlayer
+if player and player:FindFirstChild("Backpack") then
+    Tool.Parent = player.Backpack
+end
